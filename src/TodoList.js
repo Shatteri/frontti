@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import TodoTable from './TodoTable';
 
 function App() {
   const [desc, setDesc] = useState('');
@@ -34,25 +35,7 @@ function App() {
           <button type="submit">Add</button>
         </p>
       </form>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {todos.map((todo, index) => (
-            <tr key={index}>
-              <td>{todo.split(" ")[0]}</td>
-              <td>{todo.split(" ")[1]}</td>
-              <td>
-                <button onClick={() => deleteTodo(index)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <TodoTable todos={todos} deleteTodo={deleteTodo} />
     </div>
   );
 }
