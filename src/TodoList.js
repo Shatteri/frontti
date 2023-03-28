@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import './App.css';
-import TodoTable from './TodoTable';
+import { useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
-import { useRef } from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
-function Todolist() {
+function TodoList() {
   const [todo, setTodo] = useState({ description: '', date: '', priority: '' });
   const [todos, setTodos] = useState([]);
   const gridRef = useRef();
@@ -15,43 +18,71 @@ function Todolist() {
     setTodo({ ...todo, [event.target.name]: event.target.value });
   }
 
+  const handleChange = (e) => {
+    setTodo({ ...todo, date: e.target.value });
+  };
+
   const addTodo = (event) => {
+    event.preventDefault();
     setTodos([...todos, todo]);
   }
 
   const deleteTodo = () => {
     if (gridRef.current.getSelectedNodes().length > 0) {
-    setTodos(todos.filter((todo, index) =>
-    index !== gridRef.current.getSelectedNodes()[0].childIndex))
+      setTodos(todos.filter((todo, index) =>
+        index !== gridRef.current.getSelectedNodes()[0].childIndex))
     }
     else {
-    alert('Select row first');
+      alert('Select row first');
     }
-    }
+  }
 
   const columns = [
-    { headerName: 'Date', field: "date", sortable:true, filter:true },
-    { headerName: 'Description', field: "description", sortable:true, filter:true },
-    { headerName: 'Priority', field: "priority", sortable:true , filter:true, 
-    cellStyle: params => params.value === "High" ? {color: 'red'} : {color: 'black'}}]
-
+    { headerName: 'Date', field: 'date', sortable: true, filter: true },
+    { headerName: 'Description', field: 'description', sortable: true, filter: true },
+    {
+      headerName: 'Priority', field: 'priority', sortable: true, filter: true,
+      cellStyle: params => params.value === "High" ? { color: 'red' } : { color: 'green' }
+    },
+  ]
 
   return (
     <div>
-      <input type="text" onChange={inputChanged} placeholder="Description" name="description" value={todo.description} />
-      <input type="text" onChange={inputChanged} placeholder="Date" name="date" value={todo.date} />
-      <input type="text" onChange={inputChanged} placeholder="Priority" name="priority" value={todo.priority} />
-      <button onClick={addTodo}>Add</button>
-      <button onClick={deleteTodo}>Delete</button>
-      <div className='ag-theme-material' style={
-        {
+      
+      <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
+      <form>
+          <TextField
+            name="date"
+            id="date"
+            label="Date"
+            type="date"
+            onChange={inputChanged}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </form>
+        <TextField label="Description" variant="standard" name="description" value={todo.description} onChange={inputChanged} />
+        <TextField label="Priority" variant="standard" name="priority" value={todo.priority} onChange={inputChanged} />
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+        </LocalizationProvider>
+
+        <Button onClick={addTodo} variant="contained" >Add</Button>
+        <Button onClick={deleteTodo} variant="contained">Delete</Button>
+
+      </Stack>
+
+      <div className='ag-theme-material'
+        style={{
           height: '700px',
-          width: '80%',
+          width: '80%px',
           margin: 'auto'
         }}>
         <AgGridReact
           ref={gridRef}
-          onGridReady={ params => gridRef.current = params.api }
+          onGridReady={params => gridRef.current = params.api}
           rowSelection='single'
           columnDefs={columns}
           rowData={todos}>
@@ -61,48 +92,4 @@ function Todolist() {
   );
 };
 
-export default Todolist;
-
-// import React, { useState } from 'react';
-// import './App.css';
-// import TodoTable from './TodoTable';
-
-// function App() {
-//   const [desc, setDesc] = useState('');
-//   const [date, setDate] = useState('');
-//   const [todos, setTodos] = useState([]);
-
-//   const inputChanged = (event) => {
-//     setDesc(event.target.value);
-//   };
-
-//   const dateChanged = (event) => {
-//     setDate(event.target.value);
-//   };
-
-//   const addTodo = (event) => {
-//     event.preventDefault();
-//     setTodos([...todos, date + " " + desc]);
-//   };
-
-//   const deleteTodo = (index) => {
-//     setTodos(todos.filter((_, i) => i !== index));
-//   };
-
-//   return (
-//     <div className="App">
-//       <form onSubmit={addTodo}>
-//         <p>
-//           Description:
-//           <input type="text" onChange={inputChanged} value={desc} />
-//           Date:
-//           <input type="text" onChange={dateChanged} value={date} />
-//           <button type="submit">Add</button>
-//         </p>
-//       </form>
-//       <TodoTable todos={todos} deleteTodo={deleteTodo} />
-//     </div>
-//   );
-// }
-
-// export default App;
+export default TodoList;

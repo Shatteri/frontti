@@ -4,20 +4,22 @@ import About from "./About";
 import Contact from "./Contact";
 import './App.css';
 import TodoList from './TodoList';
+import TabApp from "./TabApp";
 function App() {
   return (
     <div className="App">
     <BrowserRouter>
-    <Link to="/">Home</Link>{' '}
+    <TabApp />
+    {/* <Link to="/">Home</Link>{' '}
     <Link to="/about">About</Link>{' '}
     <Link to="/contact">Contact</Link>{' '}
     <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-    </Routes>
+    </Routes> */}
       <div className="App">
-      <TodoList />
+      {/* <TodoList /> */}
     </div>
     </BrowserRouter>
     </div>
